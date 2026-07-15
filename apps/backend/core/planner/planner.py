@@ -1,7 +1,6 @@
 from core.workflow import WORKFLOW
 from core.catalog import FIELDS
 
-
 class Planner:
 
     def get_current_step(self, state):
@@ -27,3 +26,23 @@ class Planner:
     def next_step(self, state):
         step = self.get_current_step(state)
         return step["next"]
+    
+    ##atualização
+    """Agora o Planner deixará de apenas listar campos faltantes.
+    Ele passará a decidir automaticamente:
+    ainda falta informação → Atendimento;
+    todos os campos preenchidos → Tool;
+    Tool terminou → próxima etapa.
+    Esse será o momento em que o LangGraph começará a mostrar seu verdadeiro potencial."""
+    
+    def should_execute_tool(self, state):
+        return self.can_execute(state)
+
+    def get_tool(self, state):
+        step = self.get_current_step(state)
+        return step["tool"]
+
+
+    def advance(self, state):
+        state.current_step = self.next_step(state)
+        return state

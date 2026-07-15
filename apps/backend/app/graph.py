@@ -1,6 +1,5 @@
 # deixando Planner inteligente - mostra o estado atual e o q esta faltando para a proxima etapa
 from langgraph.graph import StateGraph, END
-
 from core.state import SoberanaState
 from core.planner import Planner
 
