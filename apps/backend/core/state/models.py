@@ -23,6 +23,8 @@ class SoberanaState(BaseModel):
     working_hours: Optional[float] = None
     desired_margin: Optional[float] = None
     suggested_price: Optional[float] = None
+    ##depois q criamos o arquivo clinical_hour_tool.py, podemos adicionar o campo clinical_hour no estado, para armazenar o resultado do calculo da hora clinica
+    clinical_hour: float | None = None
 
     # Mercado
     market_average: Optional[float] = None
