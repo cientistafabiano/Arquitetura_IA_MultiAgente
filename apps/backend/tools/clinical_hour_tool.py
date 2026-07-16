@@ -1,10 +1,6 @@
-"""Objetivo
+"""Objetivo: Calcular a Hora Clínica.
 
-Calcular a Hora Clínica.
-
-Fórmula inicial:
-
-Hora Clínica = (Custos Fixos + Custos Variáveis) / Horas Produtivas"""
+Fórmula inicial: Hora Clínica = (Custos Fixos + Custos Variáveis) / Horas Produtivas"""
 
 class ClinicalHourTool:
 

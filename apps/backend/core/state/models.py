@@ -25,9 +25,12 @@ class SoberanaState(BaseModel):
     suggested_price: Optional[float] = None
     ##depois q criamos o arquivo clinical_hour_tool.py, podemos adicionar o campo clinical_hour no estado, para armazenar o resultado do calculo da hora clinica
     clinical_hour: float | None = None
-
+    ##depois q criamos o arquivo direct_cost_tool.py, podemos adicionar o campo direct_cost no estado, para armazenar o resultado do calculo do custo direto
+    direct_cost: float | None = None
     # Mercado
     market_average: Optional[float] = None
+    #decisao
+    decision: str | None = None
 
     # Resultado
     recommendations: List[str] = Field(default_factory=list)
