@@ -2,8 +2,8 @@
 
 Ela receberá:
 
-preço calculado;
-média de mercado;
+preço calculado;  suggested_price
+média de mercado;   market_average
 margem;
 custos;
 histórico;
