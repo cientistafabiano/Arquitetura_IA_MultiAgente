@@ -1,3 +1,13 @@
+"""Planner deve fazer:
+
+✅ sabe em qual etapa está (current_step);
+✅ conhece o WORKFLOW;
+✅ verifica campos obrigatórios;
+✅ decide se pode executar a Tool;
+✅ sabe qual Tool pertence à etapa;
+✅ sabe qual é a próxima etapa."""
+
+
 from core.workflow import WORKFLOW
 from core.catalog import FIELDS
 
