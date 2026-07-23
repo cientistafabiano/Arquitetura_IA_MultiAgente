@@ -37,7 +37,41 @@ Não devemos adaptar o Executor às Tools; devemos padronizar as Tools.
 Esse é exatamente um dos objetivos da Sprint 2: criar um contrato único entre o LangGraph e todas as ferramentas.
 ✅ Passo 3 — Integrar as Tools existentes ao ExecutorNode.
 ✅ Passo 4 — Atualizar automaticamente o State.
-⏳ Passo 5 — Criar o ValidatorNode.
-⏳ Passo 6 — Criar as arestas condicionais (conditional_edges).
-⏳ Passo 7 — Fazer o Planner decidir o próximo passo.
-⏳ Passo 8 — Executar todo o fluxo apenas com: graph.invoke(state)
+✅ Passo 5 — Criar o ValidatorNode.
+
+Os antigos Passo 6/7/8 (conditional edges, Planner decidindo a próxima
+etapa, graph.invoke completo) foram detalhados abaixo, em Sprint 4 —
+antes deles, apareceram inconsistências que precisam ser corrigidas
+primeiro (Sprint 2 e Sprint 3).
+
+Sprint 2 — Consistência do Contrato
+✅ Passo 6a — Unificar os nomes das Tools entre WORKFLOW["tool"] e as
+chaves do dicionário em ExecutorNode (removido o sufixo "_tool").
+⏳ Passo 6b — Corrigir o campo "output" de cada etapa do WORKFLOW pra
+bater com o atributo real que a Tool escreve no State (procedure→direct_cost,
+incidence→suggested_price, market→market_average, strategy→decision).
+⏳ Passo 6c — Declarar validation_errors (e um campo de erro/status
+genérico) no SoberanaState — hoje o ValidatorNode atribui um campo que o
+Pydantic não conhece.
+⏳ Passo 6d — Ligar o ExecutorNode ao Registry em vez de instanciar as
+Tools direto.
+
+Sprint 3 — Tratamento de Erro
+⏳ Passo 7a — Padronizar validação de pré-condição em todas as Tools
+(hoje só CorrectedCostTool verifica campos obrigatórios).
+⏳ Passo 7b — Definir um formato único de erro no State (ex: status +
+mensagem), usado por toda Tool e todo Node.
+⏳ Passo 7c — Fazer o ExecutorNode capturar exceção das Tools (try/except)
+e traduzir pro formato padronizado.
+⏳ Passo 7d — Definir a regra: quando o Validator encontra erro, o que
+acontece (interrompe, volta uma etapa, ou pede nova pergunta).
+
+Sprint 4 — Orquestração Real
+⏳ Passo 8 — Registrar Executor, Validator, Atendimento e Monitor como
+nodes reais no graph.py (hoje só existe o node "planner" indo direto pro END).
+⏳ Passo 9 — Criar as conditional_edges, usando o status de erro
+padronizado (Sprint 3) e o "dados suficientes?" do Planner.
+⏳ Passo 10 — Planner decide dinamicamente a próxima etapa, conectando
+Planner.advance()/get_tool() ao grafo.
+⏳ Passo 11 — Testar o fluxo completo com graph.invoke(state) até o END
+de verdade.

@@ -7,7 +7,7 @@ from tools.direct_cost_tool import DirectCostTool
 from tools.corrected_cost_tool import CorrectedCostTool
 from tools.market_tool import MarketTool
 from tools.decision_tool import DecisionTool
-
+from graph import graph
 
 
 def main():
@@ -20,6 +20,7 @@ def main():
     corrected = CorrectedCostTool()
     market = MarketTool()
     decision = DecisionTool()
+    graph = builder.compile()
     result = graph.invoke(state)
     print(result)
     print("-------------------------")

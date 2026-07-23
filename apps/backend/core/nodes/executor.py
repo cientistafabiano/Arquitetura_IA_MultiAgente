@@ -19,6 +19,10 @@ class ExecutorNode:
 
     def __init__(self):
 
+        # As chaves abaixo precisam bater exatamente com o campo "tool"
+        # de cada etapa em core/workflow/workflow.py (WORKFLOW).
+        # Convenção (Passo 6a, Sprint 2): sem sufixo "_tool" na chave —
+        # a classe já deixa claro que é uma Tool (ex: ClinicalHourTool).
         self.tools = {
             "clinical_hour": ClinicalHourTool(),
             "direct_cost": DirectCostTool(),
