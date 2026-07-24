@@ -47,7 +47,12 @@ primeiro (Sprint 2 e Sprint 3).
 Sprint 2 — Consistência do Contrato
 ✅ Passo 6a — Unificar os nomes das Tools entre WORKFLOW["tool"] e as
 chaves do dicionário em ExecutorNode (removido o sufixo "_tool").
-⏳ Passo 6b — Corrigir o campo "output" de cada etapa do WORKFLOW pra
+✅ Fix (achado ao testar o 6a) — ExecutorNode importava o módulo de cada
+Tool com "import tools.x as NomeDaClasse" em vez de importar a classe
+("from tools.x import NomeDaClasse"). Isso fazia ExecutorNode() nunca
+conseguir instanciar ("'module' object is not callable"). Corrigido nas
+6 linhas de import do topo do executor.py.
+✅ Passo 6b — Corrigir o campo "output" de cada etapa do WORKFLOW pra
 bater com o atributo real que a Tool escreve no State (procedure→direct_cost,
 incidence→suggested_price, market→market_average, strategy→decision).
 ⏳ Passo 6c — Declarar validation_errors (e um campo de erro/status

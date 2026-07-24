@@ -30,6 +30,8 @@ sys.path.insert(0, str(BACKEND_ROOT))
 from core.workflow import WORKFLOW
 from core.nodes.executor import ExecutorNode
 
+from core.state import SoberanaState  # adicionar este import no topo do arquivo, junto dos outros
+
 
 # Tools que ainda nao existem de verdade (ex: ReportTool comentado no
 # ExecutorNode). Sao esperadas como "ainda nao implementadas", nao como
@@ -64,7 +66,42 @@ def test_todo_tool_do_workflow_existe_no_executor():
 
     assert not erros, "\n".join(erros)
 
+def test_workflow_output_bate_com_o_que_a_tool_realmente_escreve():
+    """
+    Passo 6b: roda as Tools em sequência sobre um único State (como o
+    fluxo real faria) e confere se o campo "output" declarado em cada
+    etapa do WORKFLOW é de fato preenchido pela Tool daquela etapa.
+    """
+    state = SoberanaState(
+        working_hours=160,
+        fixed_costs=12000,
+        variable_costs=3500,
+        procedure="Limpeza",
+        procedure_time=40,
+        desired_margin=30,
+    )
+
+    executor = ExecutorNode()
+
+    etapas_prontas = [s for s in WORKFLOW if s["tool"] != "report"]  # ReportTool ainda não existe
+
+    for step in etapas_prontas:
+        state.next_step = step["tool"]
+        state = executor.execute(state)
+
+        valor = getattr(state, step["output"], None)
+        assert valor is not None, (
+            f"etapa '{step['step']}': campo output '{step['output']}' "
+            f"continuou None depois de rodar a tool '{step['tool']}'"
+        )
+        print(f"[OK] etapa '{step['step']}' -> output '{step['output']}' = {valor}")
+
 
 if __name__ == "__main__":
     test_todo_tool_do_workflow_existe_no_executor()
     print("\nPasso 6a: todas as etapas do WORKFLOW apontam para uma tool valida no ExecutorNode.")
+    test_workflow_output_bate_com_o_que_a_tool_realmente_escreve()
+    print("\nPasso 6a e 6b: WORKFLOW consistente com ExecutorNode e com o State.")
+    
+    
+
