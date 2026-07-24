@@ -63,8 +63,8 @@ Tools direto (registro centralizado em core/registry/bootstrap.py).
 Sprint 3 — Tratamento de Erro
 ✅ Passo 7a — Padronizar validação de pré-condição em todas as Tools,
 via helper compartilhado tools/validation.py (require + ToolValidationError).
-⏳ Passo 7b — Definir um formato único de erro no State (ex: status +
-mensagem), usado por toda Tool e todo Node.
+✅ Passo 7b — Definir um formato único de erro no State: status +
+error_message + método state.mark_error() (usado por toda Tool e todo Node).
 ⏳ Passo 7c — Fazer o ExecutorNode capturar exceção das Tools (try/except)
 e traduzir pro formato padronizado.
 ⏳ Passo 7d — Definir a regra: quando o Validator encontra erro, o que

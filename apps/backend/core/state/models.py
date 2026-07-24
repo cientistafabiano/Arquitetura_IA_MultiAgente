@@ -7,7 +7,13 @@ class SoberanaState(BaseModel):
     messages: List[Dict[str, Any]] = Field(default_factory=list)
     current_step: str = "clinical_hour"
     next_step: Optional[str] = None
-    status: str = "started"
+     # Passo 7b (Sprint 3): "status" já existia mas ninguém usava. Agora
+    # tem semântica definida: "in_progress" (fluxo normal) ou "error"
+    # (algo falhou). error_message guarda a mensagem legível quando
+    # status == "error". Nenhum código antigo dependia do valor default
+    # anterior ("started"), então trocar é seguro.
+    status: str = "in_progress"
+    error_message: Optional[str] = None
 
     # Clínica
     clinic_name: Optional[str] = None
@@ -40,3 +46,15 @@ class SoberanaState(BaseModel):
     # ValidatorNode.execute() quebrava ao tentar atribuir um campo que o
     # Pydantic não conhecia ("no field validation_errors").
     validation_errors: List[str] = Field(default_factory=list)
+
+    # Passo 7b (Sprint 3): forma única de qualquer Tool/Node sinalizar
+    # erro no State. Em vez de cada um escrever status/error_message na
+    # mão (e arriscar formatos diferentes), todos chamam este método.
+    def mark_error(self, message: str) -> "SoberanaState":
+        self.status = "error"
+        self.error_message = message
+        return self
+
+    @property
+    def has_error(self) -> bool:
+        return self.status == "error"
