@@ -71,8 +71,14 @@ pluga a exceção da Tool (7a) no formato de erro do State (7b).
 Só captura ToolValidationError de propósito — um bug de verdade 
 (não falta de dado) continua subindo cru, pra não esconder erro de 
 programação atrás de um "status: error" genérico.
-⏳ Passo 7d — Definir a regra: quando o Validator encontra erro, o que
-acontece (interrompe, volta uma etapa, ou pede nova pergunta).
+✅ Passo 7d — Regra definida: Validator marca state.mark_error() e não
+avança current_step quando encontra problema; decisão de rota fica pro
+Passo 9 (conditional edges).
+quando o Validator encontra um problema (etapa inexistente ou output não produzido), 
+ele marca state.mark_error() (mesmo formato do 7b/7c) e não avança current_step 
+— ou seja, "interrompe" o avanço, mas não decide sozinho se vai voltar uma etapa ou gerar uma 
+ nova pergunta. Essa decisão de rota fica pro Passo 9 (conditional edges, Sprint 4),
+porque hoje o Atendimento só sabe perguntar campo vazio — ele ainda não sabe reagir a "campo preenchido
 
 Sprint 4 — Orquestração Real
 ⏳ Passo 8 — Registrar Executor, Validator, Atendimento e Monitor como

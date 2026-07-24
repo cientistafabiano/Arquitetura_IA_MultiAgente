@@ -15,7 +15,18 @@ basta adicionar ao WORKFLOW:
 
 O Validator continuará funcionando sem nenhuma alteração.
 
-Esse é um dos princípios que estamos buscando: os nós do LangGraph não dependem das regras de negócio, apenas da configuração do fluxo."""
+Esse é um dos princípios que estamos buscando: 
+os nós do LangGraph não dependem das regras de negócio, 
+apenas da configuração do fluxo.
+
+Passo 7d (Sprint 3): regra definida — quando o Validator encontra um
+problema (etapa inexistente ou output não produzido), ele marca o State
+como erro (state.mark_error(), mesmo formato usado pelas Tools desde o
+Passo 7c) e NÃO avança current_step. Decidir pra onde o fluxo vai a
+partir de um state.has_error (pedir nova pergunta, voltar etapa, etc.)
+fica pro Passo 9 (conditional edges, Sprint 4) — o Validator só sinaliza,
+não decide rota.
+"""
 
 from core.workflow import WORKFLOW
 
@@ -44,20 +55,19 @@ class ValidatorNode:
         step = self.get_current_step(state)
 
         if step is None:
-            state.validation_errors.append(
-                "Etapa inexistente."
-            )
-            return state
+            mensagem = "Etapa inexistente."
+            state.validation_errors.append(mensagem)
+            return state.mark_error(mensagem)
 
         output = step["output"]
 
         if getattr(state, output, None) is None:
-            state.validation_errors.append(
-                f"{output} não foi produzido."
-            )
+            mensagem = f"{output} não foi produzido."
+            state.validation_errors.append(mensagem)
+            return state.mark_error(mensagem)
 
         return state
-
+  
 
 """Componente	Responsabilidade
 Planner	         Decide a próxima ação
