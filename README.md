@@ -61,8 +61,8 @@ resolve o crash do ValidatorNode
 Tools direto (registro centralizado em core/registry/bootstrap.py).
 
 Sprint 3 — Tratamento de Erro
-⏳ Passo 7a — Padronizar validação de pré-condição em todas as Tools
-(hoje só CorrectedCostTool verifica campos obrigatórios).
+✅ Passo 7a — Padronizar validação de pré-condição em todas as Tools,
+via helper compartilhado tools/validation.py (require + ToolValidationError).
 ⏳ Passo 7b — Definir um formato único de erro no State (ex: status +
 mensagem), usado por toda Tool e todo Node.
 ⏳ Passo 7c — Fazer o ExecutorNode capturar exceção das Tools (try/except)

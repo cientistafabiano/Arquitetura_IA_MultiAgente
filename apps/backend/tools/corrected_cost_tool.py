@@ -8,16 +8,20 @@ inadimplência
 risco
 ocupação
 inflação
-custos financeiros"""
+custos financeiros
+
+Passo 7a (Sprint 3): a validação manual daqui virou o modelo pro helper
+compartilhado tools/validation.py — agora usa o mesmo helper das outras
+Tools, em vez de checks feitos à mão."""
+
+from tools.validation import require
+
+
 class CorrectedCostTool:
 
     def execute(self, state):
 
-        if state.direct_cost is None:
-            raise ValueError("Custo direto não calculado.")
-
-        if state.desired_margin is None:
-            raise ValueError("Margem não informada.")
+        require(state, "direct_cost", "desired_margin")
 
         corrected_cost = (
             state.direct_cost
