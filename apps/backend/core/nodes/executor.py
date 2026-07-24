@@ -7,8 +7,42 @@ localizar a classe correspondente;
 executar a ferramenta;
 devolver o resultado para o estado do LangGraph.
 
-Assim, nenhum outro componente precisará conhecer as ferramentas diretamente."""
-from tools.clinical_hour_tool import ClinicalHourTool
+Assim, nenhum outro componente precisará conhecer as ferramentas diretamente.
+
+Passo 6d (Sprint 2): antes, o ExecutorNode importava e instanciava cada
+Tool direto, num dicionário fixo dentro do __init__. Agora ele só conhece
+o Registry — quem registra as Tools é core/registry/bootstrap.py.
+"""
+from core.registry import registry
+from core.registry.bootstrap import register_tools
+
+# Garante que as Tools estão registradas antes de qualquer execução.
+# Registrar de novo é inofensivo (só sobrescreve com a mesma instância),
+# então importar este módulo mais de uma vez é seguro.
+#
+# Nota: isso é um efeito colateral no import, meio implícito — pragmático
+# pra este estágio do projeto (ainda não existe uma rotina de startup).
+# Quando a API (FastAPI) entrar, vale mover isso pra um hook de startup
+# explícito em vez de rodar no import.
+register_tools()
+
+
+class ExecutorNode:
+
+    def execute(self, state):
+
+        tool = registry.get_tool(state.next_step)
+
+        if tool is None:
+            raise ValueError(
+                f"Tool '{state.next_step}' não está registrada no Registry. "
+                f"Verifique core/registry/bootstrap.py."
+            )
+
+        return tool.execute(state)
+
+
+"""from tools.clinical_hour_tool import ClinicalHourTool
 from tools.direct_cost_tool import DirectCostTool
 from tools.corrected_cost_tool import CorrectedCostTool
 from tools.market_tool import MarketTool
@@ -45,7 +79,7 @@ class ExecutorNode:
         #retornar o estado atualizado
         return tool.execute(state)
 
-"""
+
 Essa implementação deixa o Executor totalmente desacoplado. Se amanhã você criar uma TaxTool, basta registrá-la:
 
 self.tools["tax"] = TaxTool()

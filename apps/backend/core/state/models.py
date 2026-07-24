@@ -34,3 +34,9 @@ class SoberanaState(BaseModel):
 
     # Resultado
     recommendations: List[str] = Field(default_factory=list)
+
+    # Passo 6c (Sprint 2): campo que o ValidatorNode usa pra acumular
+    # mensagens de erro de validação. Antes não existia no schema, e o
+    # ValidatorNode.execute() quebrava ao tentar atribuir um campo que o
+    # Pydantic não conhecia ("no field validation_errors").
+    validation_errors: List[str] = Field(default_factory=list)

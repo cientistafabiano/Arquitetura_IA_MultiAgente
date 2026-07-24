@@ -55,11 +55,10 @@ conseguir instanciar ("'module' object is not callable"). Corrigido nas
 ✅ Passo 6b — Corrigir o campo "output" de cada etapa do WORKFLOW pra
 bater com o atributo real que a Tool escreve no State (procedure→direct_cost,
 incidence→suggested_price, market→market_average, strategy→decision).
-⏳ Passo 6c — Declarar validation_errors (e um campo de erro/status
-genérico) no SoberanaState — hoje o ValidatorNode atribui um campo que o
-Pydantic não conhece.
-⏳ Passo 6d — Ligar o ExecutorNode ao Registry em vez de instanciar as
-Tools direto.
+✅ Passo 6c — Declarar validation_errors 
+resolve o crash do ValidatorNode 
+✅ Passo 6d — Ligar o ExecutorNode ao Registry em vez de instanciar as
+Tools direto (registro centralizado em core/registry/bootstrap.py).
 
 Sprint 3 — Tratamento de Erro
 ⏳ Passo 7a — Padronizar validação de pré-condição em todas as Tools
