@@ -65,8 +65,12 @@ Sprint 3 — Tratamento de Erro
 via helper compartilhado tools/validation.py (require + ToolValidationError).
 ✅ Passo 7b — Definir um formato único de erro no State: status +
 error_message + método state.mark_error() (usado por toda Tool e todo Node).
-⏳ Passo 7c — Fazer o ExecutorNode capturar exceção das Tools (try/except)
-e traduzir pro formato padronizado.
+✅ Passo 7c — Fazer o ExecutorNode capturar exceção das Tools (try/except)
+e traduzir pro formato padronizado (state.mark_error()).
+pluga a exceção da Tool (7a) no formato de erro do State (7b). 
+Só captura ToolValidationError de propósito — um bug de verdade 
+(não falta de dado) continua subindo cru, pra não esconder erro de 
+programação atrás de um "status: error" genérico.
 ⏳ Passo 7d — Definir a regra: quando o Validator encontra erro, o que
 acontece (interrompe, volta uma etapa, ou pede nova pergunta).
 

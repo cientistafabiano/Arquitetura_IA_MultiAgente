@@ -12,9 +12,19 @@ Assim, nenhum outro componente precisará conhecer as ferramentas diretamente.
 Passo 6d (Sprint 2): antes, o ExecutorNode importava e instanciava cada
 Tool direto, num dicionário fixo dentro do __init__. Agora ele só conhece
 o Registry — quem registra as Tools é core/registry/bootstrap.py.
+
+Passo 7c (Sprint 3): antes, se uma Tool levantasse ToolValidationError
+(Passo 7a), o erro subia cru e quebrava o grafo inteiro. Agora o
+ExecutorNode captura especificamente ToolValidationError e traduz pro
+formato padronizado do State (Passo 7b: state.mark_error()). Erros
+inesperados (bugs de verdade, não falta de dado) continuam subindo cru
+de propósito — não queremos esconder um bug atrás de um "status: error"
+genérico que o grafo vai tratar como "faltou informação do usuário".
+
 """
 from core.registry import registry
 from core.registry.bootstrap import register_tools
+from tools.validation import ToolValidationError
 
 # Garante que as Tools estão registradas antes de qualquer execução.
 # Registrar de novo é inofensivo (só sobrescreve com a mesma instância),
@@ -26,8 +36,29 @@ from core.registry.bootstrap import register_tools
 # explícito em vez de rodar no import.
 register_tools()
 
-
 class ExecutorNode:
+
+    def execute(self, state):
+
+        tool = registry.get_tool(state.next_step)
+
+        if tool is None:
+            # Bug de configuração (WORKFLOW aponta pra uma tool que
+            # ninguém registrou) — não é "faltou dado do usuário", é erro
+            # de quem está desenvolvendo. Fica explícito, não vira
+            # state.mark_error().
+            raise ValueError(
+                f"Tool '{state.next_step}' não está registrada no Registry. "
+                f"Verifique core/registry/bootstrap.py."
+            )
+
+        try:
+            return tool.execute(state)
+        except ToolValidationError as erro:
+            return state.mark_error(str(erro))
+
+
+"""class ExecutorNode:
 
     def execute(self, state):
 
@@ -42,7 +73,7 @@ class ExecutorNode:
         return tool.execute(state)
 
 
-"""from tools.clinical_hour_tool import ClinicalHourTool
+from tools.clinical_hour_tool import ClinicalHourTool
 from tools.direct_cost_tool import DirectCostTool
 from tools.corrected_cost_tool import CorrectedCostTool
 from tools.market_tool import MarketTool
